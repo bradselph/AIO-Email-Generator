@@ -27,7 +27,7 @@ jobs:
       - name: Build Binaries
         uses: wangyoucao577/go-release-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.TOKEN_GITHUB }}
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           goversion: 1.22.1
