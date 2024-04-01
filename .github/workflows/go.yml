@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  releases-matrix:
+    name: Release Go Binary
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        goos: [windows]
+        goarch: ["386", "amd64"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Binaries
+        uses: wangyoucao577/go-release-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          goversion: 1.22.1
+      - name: Package Directories and Files
+        uses: actions/upload-artifact@v2
+        with:
+          name: extra-directories-files
+          path: |
+            internal
+            models
+            cmd
+            logs
+            main.go
+            .env
+            start.sh
+          if-no-files-found: error
+      - name: Push Release
+        uses: actions/upload-artifact@v2
+        with:
+          name: Release
+          path: .
+          exclude: .git* .idea*
