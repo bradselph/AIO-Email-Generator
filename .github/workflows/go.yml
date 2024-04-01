@@ -7,7 +7,7 @@ on:
 jobs:
   releases-matrix:
     name: Release Go Binary
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         goos: [windows]
