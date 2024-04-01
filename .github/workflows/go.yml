@@ -4,14 +4,24 @@ on:
   release:
     types: [created]
 
+permissions:
+    contents: write
+    packages: write
+
 jobs:
   releases-matrix:
     name: Release Go Binary
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        goos: [windows]
-        goarch: [386, amd64]
+        goos: [linux, windows, darwin]
+        goarch: ["386", amd64, arm64]
+        exclude:
+          - goarch: "386"
+            goos: darwin
+          - goarch: arm64
+            goos: windows
+        
     steps:
       - uses: actions/checkout@v4
       - name: Build Binaries
@@ -24,19 +34,7 @@ jobs:
       - name: Package Directories and Files
         uses: actions/upload-artifact@v2
         with:
-          name: extra-directories-files
-          path: |
-            internal
-            models
-            cmd
-            logs
-            main.go
-            .env
-            start.sh
-          if-no-files-found: error
-      - name: Push Release
-        uses: actions/upload-artifact@v2
-        with:
           name: Release
           path: .
           exclude: .git* .idea*
+          if-no-files-found: error
